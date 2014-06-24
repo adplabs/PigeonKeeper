@@ -10,6 +10,7 @@ Installation
 Quick Start
 -----------
 
+```javascript
     var PigeonKeeper = require("pigeonkeeper");
     var GenericService = require("./node_modules/pigeonkeeper/lib/genericService");
 
@@ -70,6 +71,7 @@ Quick Start
 
     // Kick it!
     pk.start(mySharedData);
+```
 
 
 Introduction
