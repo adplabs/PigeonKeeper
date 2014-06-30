@@ -127,7 +127,7 @@ From: [http://en.wikipedia.org/wiki/Topological_sort](http://en.wikipedia.org/wi
 * Topological ordering need not be unique!
 
 ### Example ###
-<table border="1">
+<table>
 <tr>
 <td style="vertical-align: top"><img src="https://developers.adp.com/PK/AcyclicDigraph01.png" /></td>
 <td style="vertical-align: top">Some topological orderings of this DAG include:
