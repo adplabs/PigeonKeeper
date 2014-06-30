@@ -10,7 +10,6 @@ Installation
 Quick Start
 -----------
 
-```javascript
     var PigeonKeeper = require("pigeonkeeper");
     var GenericService = require("./node_modules/pigeonkeeper/lib/genericService");
 
@@ -71,7 +70,6 @@ Quick Start
 
     // Kick it!
     pk.start(mySharedData);
-```
 
 
 Introduction
@@ -96,6 +94,7 @@ Concepts
 * Short for "directed graphs"
 * Consists of vertices and directed edges
 
+![Example of a Digraph](https://developers.adp.com/PK/Digraph01.png "Example of a Digraph")
 
 ### Vertices ###
 Each vertex has…
@@ -117,6 +116,9 @@ Each vertex has…
 * A digraph without cycles or self-loops
 * Abbreviated DAG
 
+![Example of a DAG](https://developers.adp.com/PK/AcyclicDigraph01.png "Example of a DAG")
+
+From: [http://en.wikipedia.org/wiki/Topological_sort](http://en.wikipedia.org/wiki/Topological_sort "Wikipedia article on Topological Sort")
 
 ### Topological Sort ###
 
@@ -124,6 +126,21 @@ Each vertex has…
 * Not possible in digraphs with cycles (hence our focus on DAGs)
 * Topological ordering need not be unique!
 
+### Example ###
+<table border="1">
+<tr>
+<td style="vertical-align: top">![Example of a DAG](https://developers.adp.com/PK/AcyclicDigraph01.png "Example of a DAG")</td>
+<td style="vertical-align: top">Some topological orderings of this DAG include:
+-    7, 5, 3, 11, 8, 2, 9, 10 (visual left-to-right, top-to-bottom)
+-    3, 5, 7, 8, 11, 2, 9, 10 (smallest-numbered available vertex first)
+-    3, 7, 8, 5, 11, 10, 2, 9 (because we can)
+-    5, 7, 3, 8, 11, 10, 9, 2 (fewest edges first)
+-    7, 5, 11, 3, 10, 8, 9, 2 (largest-numbered available vertex first)
+-    7, 5, 11, 2, 3, 8, 9, 10 (attempting top-to-bottom, left-to-right)
+</td>
+</tr>
+</table>
+From: http://en.wikipedia.org/wiki/Topological_sort
 
 ### Kahn's Algorithm ###
 
@@ -132,6 +149,7 @@ Each vertex has…
 *     |V| is number of vertices
 *     |E| is number of directed edges
 * Operates by removing parentless vertices (think: onion peeling)
+* Finite acyclic digraphs must always have at least one parentless vertex, if |V| > 1
 * Detects cycles!
 * Is "destructive," so digraph must be deep-copied
 
@@ -166,7 +184,7 @@ Each vertex has…
 
 ### Processes and Edges ###
 
-* Process B depends on Process A means...^KA must be completed in order for B to start
+* Process B depends on Process A means...A must be completed in order for B to start
 * Example: B uses data fetched by A
 * Since we associate processes with vertices, we describe dependencies between the processes with directed edges!
 
@@ -200,7 +218,7 @@ Each vertex has…
 * Runs processes based on state of associated vertices
 
 
-### Vertex Available States ###
+### Available States ###
 
 Each vertex can be in one of 5 states:
 
@@ -214,25 +232,86 @@ Distinction between READY and IN_PROGRESS must be maintained if we wish to limit
 
 
 
-Lifecycle of a Vertex State
----------------------------
+### Lifecycle of a Vertex State ###
+![Lifecycle of a Vertex State](https://developers.adp.com/PK/StateTransitionRules.png "Lifecycle of a Vertex State")
+
 
 ### Transition Rules ###
-
-NOT_READY &#8594; READY when either...
+NOT_READY → READY when either...
 
 * the vertex has no parents,
 * or all parents are in SUCCESS state
 
-READY &#8594; IN_PROGRESS
+READY → IN_PROGRESS
 
 * controlled by PigeonKeeper
 
-IN_PROGRESS &#8594; SUCCESS or FAIL
+IN_PROGRESS → SUCCESS or FAIL
 
 * depends on the process associated with the vertex
 
 FAIL propagates to all children
+
+### Example State Transitions ###
+
+####Step 0####
+![Initially, all states are NOT_READY](https://developers.adp.com/PK/StateTransitions00.png "Initially, all states are NOT_READY")
+
+Initially, all states are NOT_READY
+
+
+####Step 1####
+![States without parents become READY](https://developers.adp.com/PK/StateTransitions01.png "States without parents become READY")
+
+States without parents become READY
+
+
+####Step 2####
+![Processes for the READY states are executed, and so states become IN_PROGRESS](https://developers.adp.com/PK/StateTransitions02.png "Processes for the READY states are executed, and so states become IN_PROGRESS")
+
+Processes for the READY states are executed, and so states become IN_PROGRESS
+
+
+####Step 3####
+![Some processes return OK, others fail](https://developers.adp.com/PK/StateTransitions03.png "Some processes return OK, others fail; Corresponding vertices’ states become SUCCESS or FAIL")
+
+Some processes return OK, others fail; corresponding vertices’ states become SUCCESS or FAIL
+
+
+####Step 4####
+![Vertices with SUCCESSful parents become READY; Vertices with FAILed parents also FAIL](https://developers.adp.com/PK/StateTransitions04.png "Vertices with SUCCESSful parents become READY; Vertices with FAILed parents also FAIL")
+
+Vertices with SUCCESSful parents become READY; vertices with FAILed parents also FAIL
+
+
+####Step 5####
+![READY vertices become IN_PROGRESS; FAILure propagates to children (sort of like the welfare state)](https://developers.adp.com/PK/StateTransitions05.png "READY vertices become IN_PROGRESS; FAILure propagates to children (sort of like the welfare state)")
+
+READY vertices become IN_PROGRESS; FAILure propagates to children (sort of like the welfare state)
+
+
+####Step 6####
+![Process associated with vertex 11 is SUCCESSful...](https://developers.adp.com/PK/StateTransitions06.png "Process associated with vertex 11 is SUCCESSful...")
+
+Process associated with vertex 11 is SUCCESSful...
+
+
+####Step 7####
+![...Child vertex 2 becomes READY...](https://developers.adp.com/PK/StateTransitions07.png "...Child vertex 2 becomes READY...")
+
+...Child vertex 2 becomes READY...
+
+
+####Step 8####
+![...then IN_PROGRESS...](https://developers.adp.com/PK/StateTransitions08.png "...then IN_PROGRESS...")
+
+...then IN_PROGRESS...
+
+
+####Step 9####
+![...and finishes SUCCESSfully.](https://developers.adp.com/PK/StateTransitions09.png "...and finishes SUCCESSfully.")
+
+...and finishes SUCCESSfully.
 
 
 ### About FAIL... ###
@@ -242,7 +321,7 @@ PigeonKeeper has two ways of handling failure – specified in constructor:
 1. Entire PigeonKeeper stops when one vertex FAILs, or...
 2. Vertices which depend on a FAILed process are also marked as FAIL, but other processes can continue
 
-
+Above example used option 2!
 
 Usage Steps
 -----------
@@ -276,9 +355,13 @@ Important Methods
 
 ### Commonly Used Methods ###
 
+To create the digraph and associate processes with vertices, use...
+
     addVertex(vertexId, service, serviceStart)
 
     addEdge(startVertexId, endVertexId)
+
+To start PK a'runnin', use...
 
     start(sharedData)
 
@@ -293,7 +376,7 @@ License
 
 The MIT License (MIT)
 
-Copyright (c) 2014 Automatic Data Processing, Inc.
+Copyright (c) 2014 ADP, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
