@@ -129,14 +129,16 @@ From: [http://en.wikipedia.org/wiki/Topological_sort](http://en.wikipedia.org/wi
 ### Example ###
 <table border="1">
 <tr>
-<td style="vertical-align: top">![Example of a DAG](https://developers.adp.com/PK/AcyclicDigraph01.png "Example of a DAG")</td>
+<td style="vertical-align: top"><img src="https://developers.adp.com/PK/AcyclicDigraph01.png" /></td>
 <td style="vertical-align: top">Some topological orderings of this DAG include:
--    7, 5, 3, 11, 8, 2, 9, 10 (visual left-to-right, top-to-bottom)
--    3, 5, 7, 8, 11, 2, 9, 10 (smallest-numbered available vertex first)
--    3, 7, 8, 5, 11, 10, 2, 9 (because we can)
--    5, 7, 3, 8, 11, 10, 9, 2 (fewest edges first)
--    7, 5, 11, 3, 10, 8, 9, 2 (largest-numbered available vertex first)
--    7, 5, 11, 2, 3, 8, 9, 10 (attempting top-to-bottom, left-to-right)
+
+* 7, 5, 3, 11, 8, 2, 9, 10 (visual left-to-right, top-to-bottom)
+* 3, 5, 7, 8, 11, 2, 9, 10 (smallest-numbered available vertex first)
+* 3, 7, 8, 5, 11, 10, 2, 9 (because we can)
+* 5, 7, 3, 8, 11, 10, 9, 2 (fewest edges first)
+* 7, 5, 11, 3, 10, 8, 9, 2 (largest-numbered available vertex first)
+* 7, 5, 11, 2, 3, 8, 9, 10 (attempting top-to-bottom, left-to-right)
+
 </td>
 </tr>
 </table>
