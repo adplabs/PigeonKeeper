@@ -1,0 +1,33 @@
+{
+    "name": "pigeonkeeper",
+    "version": "0.010.007",
+    "description": "PigeonKeeper - used to orchestrate the execution of processes or services",
+    "author": "Mike Klepper <MadGeometer@gmail.com>",
+
+    "repository":
+    {
+        "type": "git",
+        "url": ""
+    },
+
+    "main": "./lib/pigeonkeeper",
+
+    "keywords":
+        [
+            "PigeonKeeper",
+            "Asynchronous",
+            "Processes",
+            "Services"
+        ],
+
+    "dependencies":
+    {
+    },
+
+    "engines":
+    {
+        "node": "*"
+    },
+
+    "license": "MIT"
+}
